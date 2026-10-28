@@ -1,6 +1,10 @@
 import { Suspense } from "react";
+import Link from "next/link";
+import type { Metadata } from "next";
+import { Globe, Loader2 } from "lucide-react";
 import { logoutAction } from "@/lib/actions/auth";
-import { requireUser, getProfile } from "@/lib/auth";
+import { requireUser } from "@/lib/auth";
+import { getOwnStore, getSubscriptionInfo } from "@/lib/db/queries/dashboard";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,6 +13,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { env } from "@/lib/env";
+
+export const metadata: Metadata = { title: "Dashboard" };
 
 function DashboardSkeleton() {
   return (
@@ -21,15 +29,54 @@ function DashboardSkeleton() {
 
 async function DashboardContent() {
   const user = await requireUser();
-  const profile = await getProfile(user.id);
+  const store = await getOwnStore(user.id);
 
-  return (
-    <>
-      <div className="flex items-start justify-between">
+  if (!store) {
+    return (
+      <>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-sm text-muted-foreground">
-            Halo {profile?.full_name ?? "kamu"}! ({user.email})
+            {user.email}
+          </p>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Belum ada toko</CardTitle>
+            <CardDescription>
+              Buat terasmu dulu — satu menit, gratis, dan link-nya siap
+              dipajang di bio.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild size="lg">
+              <Link href="/onboarding">Buat Toko Sekarang</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </>
+    );
+  }
+
+  const { effectivePlan } = await getSubscriptionInfo(store.id);
+  const publicUrl = `${env.APP_URL}/${store.slug}`;
+
+  return (
+    <>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">{store.name}</h1>
+          <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+            <span className="inline-flex items-center gap-1">
+              <Globe className="size-3.5" />
+              <code>{publicUrl.replace(/^https?:\/\//, "")}</code>
+            </span>
+            <Badge variant={store.published ? "secondary" : "outline"}>
+              {store.published ? "Publik" : "Dirahasiakan"}
+            </Badge>
+            <Badge variant="outline" className="capitalize">
+              Paket {effectivePlan}
+            </Badge>
           </p>
         </div>
         <form action={logoutAction}>
@@ -41,17 +88,20 @@ async function DashboardContent() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Sesi aktif ✔</CardTitle>
+          <CardTitle>Langkah berikutnya</CardTitle>
           <CardDescription>
-            Login, registrasi, dan profil (tabel profiles) sudah berjalan.
-            Pembuatan toko & katalog hadir di Milestone 1–2.
+            Kelola profil &amp; nomor WhatsApp toko; katalog, pesanan, analitik,
+            dan tema menyusul tiap milestone.
           </CardDescription>
         </CardHeader>
-        <CardContent className="text-sm text-muted-foreground">
-          Profil tersimpan:
-          <pre className="mt-2 rounded-md bg-muted p-3 text-xs">
-            {JSON.stringify(profile, null, 2)}
-          </pre>
+        <CardContent className="flex flex-wrap gap-3">
+          <Button asChild variant="outline">
+            <Link href="/dashboard/toko">Atur Profil Toko</Link>
+          </Button>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="size-4 animate-spin" />
+            Halaman publik &amp; katalog sedang dibangun (M2–M3)
+          </div>
         </CardContent>
       </Card>
     </>
@@ -60,10 +110,10 @@ async function DashboardContent() {
 
 export default function DashboardPage() {
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-12">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
       <Suspense fallback={<DashboardSkeleton />}>
         <DashboardContent />
       </Suspense>
-    </main>
+    </div>
   );
 }
