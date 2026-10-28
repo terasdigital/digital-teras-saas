@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Digital Teras
 
-## Getting Started
+Micro-SaaS link-in-bio dengan katalog produk & checkout WhatsApp (micro-store) untuk UMKM/kreator Indonesia.
 
-First, run the development server:
+**Stack:** Next.js 16 (App Router, Cache Components) · TypeScript · Tailwind 4 · shadcn/ui · Zustand · Zod v4 · Supabase (Postgres/Auth/Storage) · Midtrans (sandbox) · Vercel.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Setup pengembangan
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Pasang dependensi**
+   ```bash
+   pnpm install
+   ```
+2. **Supabase lokal** (butuh Docker) — atau pakai proyek cloud:
+   ```bash
+   pnpm dlx supabase start     # catat API URL + anon key + service role key
+   pnpm dlx supabase db reset  # jalankan migrasi + seed
+   ```
+3. **Environment** — salin `​.env.example` → `.env.local`, isi URL & key dari langkah 2.
+4. **Jalankan**
+   ```bash
+   pnpm dev
+   ```
+5. **Auth Google (opsional):** di dashboard Supabase → Auth → Provider Google, dan tambahkan redirect URL `http://localhost:3000/auth/callback`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Perintah
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Perintah | Fungsi |
+|---|---|
+| `pnpm dev` / `pnpm build` | development / production build |
+| `pnpm test` | unit test (Vitest) |
+| `pnpm typecheck` / `pnpm lint` | pemeriksaan tipe / ESLint |
+| `pnpm dlx supabase db reset` | reset DB lokal: migrate + seed |
+| `pnpm dlx supabase gen types typescript --local > src/types/database.ts` | regenerasi tipe dari skema DB (mulai M1) |
 
-## Learn More
+## Konvensi penting
 
-To learn more about Next.js, take a look at the following resources:
+- **Uang = IDR utuh (`bigint`)** — lihat `src/lib/format.ts` (`formatRupiah`).
+- **Gambar disimpan sebagai path Storage**, bukan URL — helper `assetUrl()`.
+- **Skema DB adalah sumber kebenaran**; migrasi di `supabase/migrations/`, jangan edit DB manual.
+- **Slug toko** berverifikasi di Zod, helper `src/lib/slug.ts`, DAN di RPC `create_store` (defense in depth).
+- **Service-role key** hanya boleh diimpor lewat `src/lib/supabase/admin.ts` (di-backup `server-only`).
+- **Cache Components aktif** (`next.config.ts`): rute dinamis = shell + `<Suspense>`; cache halaman pakai `"use cache"` + tag `store:{slug}` yang di-revalidate tiap mutasi seller.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Roadmap milestone
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- ✅ **M0** — scaffold, Supabase lokal/cloud, auth (email+Google), guard middleware (`src/proxy.ts`), profiles trigger
+- ⏭ **M1** — tabel `stores` + RPC `create_store` + wizard onboarding + layout dashboard + upload gambar
+- **M2** katalog (produk + varian/stok) · **M3** storefront publik · **M4** keranjang + checkout WA + pesanan · **M5** analitik · **M6** tema · **M7** batas freemium + Midtrans · **M8** polish/SEO
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Detail lengkap: lihat rencana teknis di `~/.claude/plans/saya-ingin-membuat-digital-glittery-otter.md`.
