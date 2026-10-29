@@ -128,3 +128,44 @@
     @apply font-sans;
   }
 }
+
+/* ── Tema etalase publik (M6) ───────────────────────────────────────────────
+   Variabel --dt-* diset INLINE oleh server di root .dt-store (HTML pertama,
+   tanpa FOUC). Kelas di luar @layer → menang atas utilitas Tailwind bila
+   bentrok, sesuai kebutuhan .dt-cta menggantikan bg netral. */
+.dt-store {
+  --dt-accent: #171717;
+  --dt-accent-fg: #ffffff;
+  --dt-radius: 0.75rem;
+}
+
+.dt-cta {
+  background-color: var(--dt-accent);
+  color: var(--dt-accent-fg);
+  border-radius: var(--dt-radius);
+}
+
+.dt-button-outline .dt-cta {
+  background-color: transparent;
+  color: var(--dt-accent);
+  border: 1.5px solid var(--dt-accent);
+}
+
+.dt-accent-text {
+  color: var(--dt-accent);
+}
+
+.dt-rounded {
+  border-radius: var(--dt-radius);
+}
+
+.dt-font-sans {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+.dt-font-rounded {
+  font-family: ui-rounded, "SF Pro Rounded", "Segoe UI Rounded", Nunito,
+    var(--font-geist-sans), system-ui, sans-serif;
+}
+.dt-font-serif {
+  font-family: Georgia, "Times New Roman", ui-serif, serif;
+}

@@ -74,8 +74,7 @@ export async function getStorefront(storeSlug: string): Promise<StorefrontData |
       .from('public_links')
       .select('*')
       .eq('store_id', typedStore.id)
-      .order('position', { ascending: true })
-      .order('created_at', { ascending: true }),
+      .order('position', { ascending: true }),
     supabase
       .from('public_products')
       .select('*')
@@ -83,6 +82,13 @@ export async function getStorefront(storeSlug: string): Promise<StorefrontData |
       .order('position', { ascending: true })
       .order('created_at', { ascending: false }),
   ])
+
+  // dev-only: jangan telan mismatch skema/view (links dulu hilang senyap
+  // karena order pada kolom yang tidak ada di view)
+  if (process.env.NODE_ENV !== 'production') {
+    if (linksRes.error) console.error('[storefront] public_links:', linksRes.error.message)
+    if (productsRes.error) console.error('[storefront] public_products:', productsRes.error.message)
+  }
 
   return {
     store: typedStore,

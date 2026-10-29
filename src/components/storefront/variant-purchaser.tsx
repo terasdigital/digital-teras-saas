@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { ShoppingBag } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cart";
 import { formatRupiah } from "@/lib/format";
 import { track } from "@/lib/track";
@@ -67,16 +66,16 @@ export function VariantPurchaser({ storeSlug, product, variants }: Props) {
                 type="button"
                 onClick={() => setSelectedId(v.id)}
                 className={
-                  "rounded-xl border px-3 py-2 text-left text-sm transition-colors " +
+                  "px-3 py-2 text-left text-sm transition-colors " +
                   (active
-                    ? "border-neutral-900 bg-neutral-900 text-white"
+                    ? "dt-cta font-semibold"
                     : out
-                      ? "border-dashed text-neutral-400"
-                      : "bg-white hover:border-neutral-400")
+                      ? "rounded-xl border border-dashed text-neutral-400"
+                      : "dt-rounded border bg-white hover:border-neutral-400")
                 }
               >
                 <span className="font-medium">{v.name}</span>
-                <span className={active ? "text-white/70" : "text-neutral-500"}>
+                <span className={active ? "opacity-75" : "text-neutral-500"}>
                   {" "}
                   · {formatRupiah(v.price_idr)}
                   {out ? " · habis" : v.stock !== null ? ` · sisa ${v.stock}` : ""}
@@ -92,10 +91,14 @@ export function VariantPurchaser({ storeSlug, product, variants }: Props) {
           Varian ini sedang habis — pilih varian lain ya
         </div>
       ) : (
-        <Button type="button" size="lg" className="w-full" onClick={addToCart}>
-          <ShoppingBag className="size-4" />
+        <button
+          type="button"
+          onClick={addToCart}
+          className="dt-cta flex w-full items-center justify-center gap-2 px-4 py-3.5 text-base font-semibold transition-transform hover:scale-[1.01] active:scale-[0.99]"
+        >
+          <ShoppingBag className="size-5" />
           Tambah ke Keranjang — {formatRupiah(selected.price_idr)}
-        </Button>
+        </button>
       )}
     </div>
   );

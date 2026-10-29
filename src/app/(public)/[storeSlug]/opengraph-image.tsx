@@ -1,5 +1,7 @@
 import { ImageResponse } from "next/og";
 import { getStorefront } from "@/lib/db/queries/storefront";
+import { fgFor } from "@/lib/theme";
+import { readTheme } from "@/lib/validation/theme";
 
 export const alt = "Digital Teras — micro-store di satu link";
 export const size = { width: 1200, height: 630 };
@@ -16,6 +18,8 @@ export default async function StoreOgImage({
   const name = data?.store.name ?? "Digital Teras";
   const tagline =
     data?.store.tagline ?? "Katalog & pesanan WhatsApp dalam satu link.";
+  const theme = readTheme(data?.store.settings ?? {});
+  const accentFg = fgFor(theme.accent);
 
   return new ImageResponse(
     (
@@ -39,8 +43,13 @@ export default async function StoreOgImage({
             alignItems: "center",
             gap: 12,
             fontSize: 28,
-            opacity: 0.85,
+            opacity: 0.95,
             marginBottom: 24,
+            background: theme.accent,
+            color: accentFg,
+            padding: "10px 22px",
+            borderRadius: 16,
+            fontWeight: 600,
           }}
         >
           <span
@@ -51,8 +60,8 @@ export default async function StoreOgImage({
               width: 44,
               height: 44,
               borderRadius: 12,
-              background: "#fbbf24",
-              color: "#1c1917",
+              background: accentFg,
+              color: theme.accent,
               fontSize: 26,
               fontWeight: 700,
             }}
@@ -64,6 +73,16 @@ export default async function StoreOgImage({
         <div style={{ display: "flex", fontSize: 76, fontWeight: 700, lineHeight: 1.1 }}>
           {name.slice(0, 40)}
         </div>
+        <div
+          style={{
+            display: "flex",
+            width: 180,
+            height: 10,
+            background: theme.accent,
+            borderRadius: 6,
+            marginTop: 20,
+          }}
+        />
         <div style={{ display: "flex", fontSize: 30, opacity: 0.75, marginTop: 18 }}>
           {tagline.slice(0, 90)}
         </div>
