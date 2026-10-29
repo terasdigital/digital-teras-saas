@@ -40,14 +40,14 @@ export async function submitOrderAction(input: unknown): Promise<CheckoutResult>
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? 'Data pesanan tidak valid' }
   }
-  const { storeSlug, buyer, lines } = parsed.data
+  const { storeSlug, buyer, lines, session } = parsed.data
 
   const supabase = await createClient()
   const { data, error } = await supabase.rpc('place_order', {
     p_store_slug: storeSlug,
     p_buyer: { name: buyer.name, phone: buyer.phone, note: buyer.note },
     p_items: lines.map((l) => ({ variantId: l.variantId, qty: l.qty })),
-    p_session: null,
+    p_session: session ?? null,
   })
   if (error || !data) return { error: friendly(error?.message) }
 

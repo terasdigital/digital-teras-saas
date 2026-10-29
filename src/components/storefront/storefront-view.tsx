@@ -6,6 +6,8 @@ import { assetUrl } from "@/lib/storage";
 import { BrandingBadge } from "./branding-badge";
 import { CartButton } from "./cart-islands";
 import { LinkIcon } from "./link-icon";
+import { TrackPageView } from "./track-page-view";
+import { TrackedLink } from "./tracked-link";
 
 function soldOut(p: PublicProduct): boolean {
   return p.variants.length > 0 && p.variants.every((v) => v.stock === 0);
@@ -56,6 +58,7 @@ export function StorefrontView({ data }: { data: StorefrontData }) {
 
   return (
     <div className="min-h-svh bg-neutral-50">
+      <TrackPageView storeSlug={store.slug} event="visit" />
       <div className="mx-auto flex w-full max-w-md flex-col gap-5 px-4 py-8">
         {/* Header toko */}
         <header className="flex flex-col items-center gap-3 text-center">
@@ -88,16 +91,15 @@ export function StorefrontView({ data }: { data: StorefrontData }) {
         {links.length > 0 && (
           <nav className="flex flex-col gap-2.5">
             {links.map((link) => (
-              <a
+              <TrackedLink
                 key={link.id}
+                storeSlug={store.slug}
+                linkId={link.id}
                 href={link.url}
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-                className="flex items-center justify-center gap-2 rounded-xl bg-neutral-900 px-4 py-3 text-sm font-medium text-white transition-transform hover:scale-[1.01] active:scale-[0.99]"
               >
                 <LinkIcon icon={link.icon} className="size-4" />
                 {link.label}
-              </a>
+              </TrackedLink>
             ))}
           </nav>
         )}

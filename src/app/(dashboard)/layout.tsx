@@ -23,8 +23,8 @@ const NAV: NavItem[] = [
   { label: "Toko", href: "/dashboard/toko", icon: Store },
   { label: "Produk", href: "/dashboard/produk", icon: Package },
   { label: "Pesanan", href: "/dashboard/pesanan", icon: Receipt },
+  { label: "Analitik", href: "/dashboard/analitik", icon: BarChart3 },
   { label: "Tampilan", icon: Palette, soon: true },
-  { label: "Analitik", icon: BarChart3, soon: true },
   { label: "Langganan", icon: Crown, soon: true },
 ];
 

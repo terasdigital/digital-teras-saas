@@ -40,6 +40,7 @@ export const checkoutSchema = z.object({
   buyer: buyerSchema,
   // harga TIDAK ikut dikirim — otoritas harga ada di DB (place_order)
   lines: z.array(checkoutLineSchema).min(1, 'Keranjangmu masih kosong').max(50),
+  session: z.uuid().nullable().optional(),
 })
 
 export type CheckoutInput = z.infer<typeof checkoutSchema>

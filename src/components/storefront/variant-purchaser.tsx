@@ -6,6 +6,7 @@ import { ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cart";
 import { formatRupiah } from "@/lib/format";
+import { track } from "@/lib/track";
 import { OPEN_CART_EVENT } from "./cart-islands";
 import type { PublicVariant } from "@/lib/db/queries/storefront";
 
@@ -43,6 +44,7 @@ export function VariantPurchaser({ storeSlug, product, variants }: Props) {
       },
       1,
     );
+    track(storeSlug, "cart_add", product.id);
     toast.success("Masuk keranjang 🛒", {
       action: {
         label: "Buka",

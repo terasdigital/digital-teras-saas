@@ -9,6 +9,7 @@ import { formatRupiah } from "@/lib/format";
 import { assetUrl } from "@/lib/storage";
 import { CartButton } from "@/components/storefront/cart-islands";
 import { VariantPurchaser } from "@/components/storefront/variant-purchaser";
+import { TrackPageView } from "@/components/storefront/track-page-view";
 
 async function load(params: Promise<{ storeSlug: string; productSlug: string }>) {
   const { storeSlug, productSlug } = await params;
@@ -52,6 +53,11 @@ async function Content({
 
   return (
     <>
+      <TrackPageView
+        storeSlug={store.slug}
+        event="product_view"
+        targetId={product.id}
+      />
       <Link
         href={`/${store.slug}`}
         className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-neutral-900"

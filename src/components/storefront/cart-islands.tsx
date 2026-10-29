@@ -38,6 +38,7 @@ import {
 } from "@/stores/cart";
 import { submitOrderAction } from "@/lib/actions/checkout";
 import { formatRupiah } from "@/lib/format";
+import { getSessionId, track } from "@/lib/track";
 
 export const OPEN_CART_EVENT = "dt:open-cart";
 
@@ -241,6 +242,8 @@ function CheckoutDialog({
     // mengisi lokasinya setelah server action selesai. Tanpa 'noopener' karena
     // kita butuh handle-nya — sebagai gantinya putus back-reference ke opener
     // selagi masih about:blank (aman dari reverse-tabnabbing).
+    track(storeSlug, "checkout");
+
     const popup = window.open("", "_blank");
     if (popup) popup.opener = null;
 
@@ -249,6 +252,7 @@ function CheckoutDialog({
         storeSlug,
         buyer: { name, phone, note },
         lines: lines.map((l) => ({ variantId: l.variantId, qty: l.qty })),
+        session: getSessionId(),
       });
       if ("error" in res) {
         toast.error(res.error);
