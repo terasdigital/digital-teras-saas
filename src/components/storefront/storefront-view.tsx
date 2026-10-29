@@ -4,6 +4,7 @@ import type { PublicProduct, StorefrontData } from "@/lib/db/queries/storefront"
 import { formatRupiah } from "@/lib/format";
 import { assetUrl } from "@/lib/storage";
 import { BrandingBadge } from "./branding-badge";
+import { CartButton } from "./cart-islands";
 import { LinkIcon } from "./link-icon";
 
 function soldOut(p: PublicProduct): boolean {
@@ -121,6 +122,9 @@ export function StorefrontView({ data }: { data: StorefrontData }) {
 
         <BrandingBadge />
       </div>
+
+      {/* island keranjang: tombol mengambang + sheet + dialog checkout */}
+      <CartButton storeSlug={store.slug} />
     </div>
   );
 }

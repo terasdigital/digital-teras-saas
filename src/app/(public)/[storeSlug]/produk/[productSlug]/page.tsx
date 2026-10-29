@@ -5,8 +5,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { getProductPage } from "@/lib/db/queries/storefront";
-import { formatNumber, formatRupiah } from "@/lib/format";
+import { formatRupiah } from "@/lib/format";
 import { assetUrl } from "@/lib/storage";
+import { CartButton } from "@/components/storefront/cart-islands";
+import { VariantPurchaser } from "@/components/storefront/variant-purchaser";
 
 async function load(params: Promise<{ storeSlug: string; productSlug: string }>) {
   const { storeSlug, productSlug } = await params;
@@ -86,42 +88,28 @@ async function Content({
         )}
       </div>
 
-      {multi && (
-        <div className="rounded-xl border bg-white p-3">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-500">
-            Pilihan
-          </p>
-          <ul className="flex flex-col divide-y">
-            {product.variants.map((v) => (
-              <li key={v.id} className="flex items-center justify-between py-2 text-sm">
-                <span>{v.name}</span>
-                <span className="text-right">
-                  <span className="font-medium">{formatRupiah(v.price_idr)}</span>
-                  <span className="ml-2 text-xs text-neutral-500">
-                    {v.stock === null
-                      ? ""
-                      : v.stock === 0
-                        ? "habis"
-                        : `sisa ${formatNumber(v.stock)}`}
-                  </span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <VariantPurchaser
+        storeSlug={store.slug}
+        product={{
+          id: product.id,
+          name: product.name,
+          imagePath: product.image_path,
+        }}
+        variants={product.variants}
+      />
 
       <a
         href={chatUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3.5 text-sm font-semibold text-white transition-transform hover:scale-[1.01] active:scale-[0.99]"
+        className="flex items-center justify-center gap-2 rounded-xl border bg-white px-4 py-3 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900"
       >
         <MessageCircle className="size-4" />
-        Tanya / Pesan via WhatsApp
+        Tanya dulu via WhatsApp
       </a>
+      <CartButton storeSlug={store.slug} />
       <p className="text-center text-xs text-neutral-400">
-        Keranjang &amp; formulir pesanan resmi hadir di pembaruan berikutnya ✨
+        Pesananmu tercatat otomatis di toko ini — walau chaticonnya belum kesentuh ✨
       </p>
     </>
   );

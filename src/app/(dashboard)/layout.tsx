@@ -22,8 +22,8 @@ const NAV: NavItem[] = [
   { label: "Ringkasan", href: "/dashboard", icon: LayoutDashboard },
   { label: "Toko", href: "/dashboard/toko", icon: Store },
   { label: "Produk", href: "/dashboard/produk", icon: Package },
+  { label: "Pesanan", href: "/dashboard/pesanan", icon: Receipt },
   { label: "Tampilan", icon: Palette, soon: true },
-  { label: "Pesanan", icon: Receipt, soon: true },
   { label: "Analitik", icon: BarChart3, soon: true },
   { label: "Langganan", icon: Crown, soon: true },
 ];
