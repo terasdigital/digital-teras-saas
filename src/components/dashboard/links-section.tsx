@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, type FormEvent } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2, Trash2 } from "lucide-react";
@@ -166,7 +167,11 @@ export function LinksSection({ links, usage }: Props) {
         </form>
         {usage.can === false && (
           <p className="text-xs text-amber-600">
-            Batas tautan paket tercapai — upgrade hadir di Milestone 7.
+            Batas tautan paket tercapai —{" "}
+            <Link href="/dashboard/langganan" className="underline underline-offset-2">
+              upgrade di Langganan
+            </Link>
+            .
           </p>
         )}
       </CardContent>

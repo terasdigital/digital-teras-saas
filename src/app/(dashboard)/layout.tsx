@@ -25,7 +25,7 @@ const NAV: NavItem[] = [
   { label: "Pesanan", href: "/dashboard/pesanan", icon: Receipt },
   { label: "Analitik", href: "/dashboard/analitik", icon: BarChart3 },
   { label: "Tampilan", href: "/dashboard/tampilan", icon: Palette },
-  { label: "Langganan", icon: Crown, soon: true },
+  { label: "Langganan", href: "/dashboard/langganan", icon: Crown },
 ];
 
 function SidebarNav({ orientation }: { orientation: "vertical" | "horizontal" }) {

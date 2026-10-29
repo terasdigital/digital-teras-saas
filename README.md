@@ -44,8 +44,13 @@ Micro-SaaS link-in-bio dengan katalog produk & checkout WhatsApp (micro-store) u
 ## Roadmap milestone
 
 - ✅ **M0** — scaffold, Supabase lokal/cloud, auth (email+Google), guard middleware (`src/proxy.ts`), profiles trigger
-- ✅ **M1** — tabel `stores`/`plans`/`subscriptions` + RPC `create_store`/`is_store_slug_available`/`effective_plan`, wizard onboarding (live-check slug, validasi WA 08xx), layout dashboard + sidebar, upload avatar/banner signed-URL
-- ⏭ **M2** — katalog: produk + varian/stok, variant repeater, gambar produk, guard `can_create`
-- **M3** storefront publik · **M4** keranjang + checkout WA + pesanan · **M5** analitik · **M6** tema · **M7** batas freemium + Midtrans · **M8** polish/SEO
+- ✅ **M1** — `stores`/`plans`/`subscriptions` + RPC `create_store`, wizard onboarding (live-check slug, WA 08xx), dashboard + sidebar, upload signed-URL
+- ✅ **M2** — katalog: produk + varian/stok (invariant varian `Default`), `upsert_product` atomik, gambar produk, guard `can_create`
+- ✅ **M3** — storefront publik `/{slug}` (views anonim + `"use cache"` tag per toko, 3 layout, OG image, `links` + manajemennya)
+- ✅ **M4** — keranjang Zustand + checkout WhatsApp + order log (`place_order` otoritatif harga; snapshot item; realtime dashboard)
+- ✅ **M5** — analitik: beacon `/api/track`, event + rollup, corong konversi, dedupe 30 dtk
+- ✅ **M6** — tema: `themeSchema`, CSS vars di server-render, editor + pratinjau langsung
+- ✅ **M7** — langganan Midtrans (sandbox): `billing_payments`, webhook idempoten + SHA512 + belt-check, halaman Langganan (QRIS/VABCA/Snap kartu), meter batas di semua create
+- ⏭ **M8** — polish/SEO: sitemap, JSON-LD, Lighthouse storefront, rate-limit, audit RLS anon
 
 Detail lengkap: lihat rencana teknis di `~/.claude/plans/saya-ingin-membuat-digital-glittery-otter.md`.

@@ -111,9 +111,11 @@ async function ProdukContent() {
           </Button>
         ) : (
           <div className="flex flex-col items-end gap-1">
-            <Button disabled>Tambah Produk</Button>
-            <span className="text-xs text-amber-600 dark:text-amber-500">
-              Batas paket tercapai — tautan upgrade hadir di Milestone 7.
+            <Button asChild>
+              <Link href="/dashboard/langganan">Upgrade untuk Tambah</Link>
+            </Button>
+            <span className="text-xs text-muted-foreground">
+              Batas paket {usage.plan} tercapai.
             </span>
           </div>
         )}
