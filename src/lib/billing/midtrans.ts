@@ -57,23 +57,40 @@ export function createMidtransProvider(): BillingProvider {
         return { kind: 'redirect', url }
       }
 
-      const enabled = input.method === 'qris' ? ['qris'] : ['bca_va']
+      // Core API v2 memakai `payment_type` + blok per metode
+      // (bukan `enabled_payments` — itu format Snap, pemicu
+      // "payment_type is required").
+      const td = { transaction_details: { order_id: input.orderId, gross_amount: input.grossIdr } }
+      const body =
+        input.method === 'qris'
+          ? {
+              payment_type: 'qris',
+              ...td,
+              metadata: input.metadata ?? {},
+              qris: { optimal: false },
+            }
+          : {
+              payment_type: 'bank_transfer',
+              ...td,
+              metadata: input.metadata ?? {},
+              bank_transfer: { bank: 'bca' },
+            }
+
       const json = await mtFetch(cfg, `${apiBase(cfg)}/v2/charge`, {
         method: 'POST',
-        body: JSON.stringify({
-          transaction_details: { order_id: input.orderId, gross_amount: input.grossIdr },
-          enabled_payments: enabled,
-          metadata: input.metadata ?? {},
-          ...(input.method === 'qris' ? { qris: { optimal: false } } : {}),
-        }),
+        body: JSON.stringify(body),
       })
+      // v2 kadang membungkus detail di `transaction_data` — dukung kedua bentuk
+      const data = (json.transaction_data as Record<string, unknown> | undefined) ?? json
 
       if (input.method === 'qris') {
-        const qr = json.qr_string
+        const qr = json.qr_string ?? data.qr_string
         if (typeof qr !== 'string') throw new Error('QRIS tidak mengembalikan qr_string.')
         return { kind: 'qris', qrString: qr }
       }
-      const vaArr = json.va_numbers as { bank: string; va_number: string }[] | undefined
+      const vaArr =
+        (json.va_numbers as { bank: string; va_number: string }[] | undefined) ??
+        (data.va_numbers as { bank: string; va_number: string }[] | undefined)
       const va = vaArr?.[0]
       if (!va?.va_number) throw new Error('BCA VA tidak dikembalikan.')
       return { kind: 'va', bank: va.bank, vaNumber: va.va_number }
