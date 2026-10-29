@@ -12,7 +12,7 @@ import { assetUrl, STORE_ASSETS_BUCKET } from "@/lib/storage";
 const MAX_BYTES = 2 * 1024 * 1024; // 2 MB
 
 type Props = {
-  purpose: "avatar" | "banner";
+  purpose: "avatar" | "banner" | "produk";
   label: string;
   /** Path tersimpan saat ini (dari DB) — dipakai untuk preview awal. */
   currentPath?: string | null;

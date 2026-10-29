@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Globe, Loader2 } from "lucide-react";
+import { Globe } from "lucide-react";
 import { logoutAction } from "@/lib/actions/auth";
 import { requireUser } from "@/lib/auth";
 import { getOwnStore, getSubscriptionInfo } from "@/lib/db/queries/dashboard";
@@ -94,14 +94,16 @@ async function DashboardContent() {
             dan tema menyusul tiap milestone.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-wrap gap-3">
+        <CardContent className="flex flex-wrap items-center gap-3">
           <Button asChild variant="outline">
             <Link href="/dashboard/toko">Atur Profil Toko</Link>
           </Button>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="size-4 animate-spin" />
-            Halaman publik &amp; katalog sedang dibangun (M2–M3)
-          </div>
+          <Button asChild variant="outline">
+            <Link href="/dashboard/produk">Kelola Produk</Link>
+          </Button>
+          <span className="text-sm text-muted-foreground">
+            Etalase publik hadir di Milestone 3 — katalogmu sudah tersimpan aman.
+          </span>
         </CardContent>
       </Card>
     </>

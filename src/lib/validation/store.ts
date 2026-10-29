@@ -50,7 +50,7 @@ export const bioSchema = z
 export const assetPathSchema = z
   .string()
   .regex(
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/stores\/[\w.-]+\/(avatar|banner)-[0-9a-z]+\.(webp|jpg|png)$/,
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/stores\/[\w.-]+\/(avatar|banner|produk)-[0-9a-z]+\.(webp|jpg|png)$/,
     'Path gambar tidak valid',
   )
 

@@ -93,7 +93,7 @@ export async function checkSlugAvailability(
  * Bytes tidak pernah lewat server kita.
  */
 export async function prepareImageUpload(
-  purpose: 'avatar' | 'banner',
+  purpose: 'avatar' | 'banner' | 'produk',
   filename: string,
 ): Promise<{ path?: string; token?: string; error?: string }> {
   const user = await requireUser()

@@ -21,7 +21,7 @@ type NavItem = {
 const NAV: NavItem[] = [
   { label: "Ringkasan", href: "/dashboard", icon: LayoutDashboard },
   { label: "Toko", href: "/dashboard/toko", icon: Store },
-  { label: "Produk", icon: Package, soon: true },
+  { label: "Produk", href: "/dashboard/produk", icon: Package },
   { label: "Tampilan", icon: Palette, soon: true },
   { label: "Pesanan", icon: Receipt, soon: true },
   { label: "Analitik", icon: BarChart3, soon: true },
