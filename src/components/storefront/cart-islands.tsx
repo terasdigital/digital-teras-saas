@@ -236,6 +236,14 @@ function CheckoutDialog({
   const [note, setNote] = useState("");
 
   function handleConfirm() {
+    // KUNCI anti-popup-blocker: buka tab kosong SINKRON di dalam gesture klik
+    // (sebelum await). Tab yang dibuka saat klik tidak diblokir; kita tinggal
+    // mengisi lokasinya setelah server action selesai. Tanpa 'noopener' karena
+    // kita butuh handle-nya — sebagai gantinya putus back-reference ke opener
+    // selagi masih about:blank (aman dari reverse-tabnabbing).
+    const popup = window.open("", "_blank");
+    if (popup) popup.opener = null;
+
     startCheckout(async () => {
       const res = await submitOrderAction({
         storeSlug,
@@ -244,11 +252,23 @@ function CheckoutDialog({
       });
       if ("error" in res) {
         toast.error(res.error);
+        popup?.close(); // tutup tab kosong bila pesanan gagal dibuat
         return;
       }
-      // pesanan sudah tercatat di dashboard seller — buka chat WA lalu ke sukses
-      const win = window.open(res.waUrl, "_blank", "noopener");
-      if (!win) window.location.href = res.waUrl;
+      // Fallback andal: simpan URL untuk tombol <a> di terima-kasih.
+      try {
+        sessionStorage.setItem(`dt.wa.${res.ref}`, res.waUrl);
+      } catch {
+        /* mode privat / storage penuh — tombol manual masih ada fallback */
+      }
+      // Isi tab yang dibuka saat gesture (bila browser mengizinkan).
+      if (popup) {
+        try {
+          popup.location.href = res.waUrl;
+        } catch {
+          /* diblokir total → andalkan tombol di terima-kasih */
+        }
+      }
       clear(storeSlug);
       onDone();
       router.push(`/${storeSlug}/terima-kasih?ref=${encodeURIComponent(res.ref)}`);

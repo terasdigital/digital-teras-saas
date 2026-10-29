@@ -11,6 +11,7 @@ import { ORDER_STATUS_LABEL } from "@/lib/order-status";
 import { formatNumber, formatRupiah } from "@/lib/format";
 import { normalizeWhatsappNumber } from "@/lib/wa-number";
 import { assetUrl } from "@/lib/storage";
+import { OrdersLive } from "@/components/dashboard/orders-live";
 import { OrderStatusSelect } from "../order-status-select";
 
 export const metadata: Metadata = { title: "Detail Pesanan" };
@@ -52,7 +53,10 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
             · status lama: {ORDER_STATUS_LABEL[order.status]}
           </p>
         </div>
-        <OrderStatusSelect orderId={order.id} current={order.status} />
+        <div className="flex items-center gap-3">
+          <OrdersLive storeId={store.id} />
+          <OrderStatusSelect orderId={order.id} current={order.status} />
+        </div>
       </div>
 
       <div className="rounded-xl border bg-card">

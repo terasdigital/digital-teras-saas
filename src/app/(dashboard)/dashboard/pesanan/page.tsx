@@ -9,6 +9,7 @@ import { listOrders } from "@/lib/db/queries/order";
 import { ORDER_STATUS_LABEL } from "@/lib/order-status";
 import { formatRupiah } from "@/lib/format";
 import { Card, CardContent } from "@/components/ui/card";
+import { OrdersLive } from "@/components/dashboard/orders-live";
 import { OrderStatusSelect } from "./order-status-select";
 
 export const metadata: Metadata = { title: "Pesanan" };
@@ -40,27 +41,35 @@ async function Content() {
 
   if (orders.length === 0) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
-          <ReceiptText className="size-8 text-muted-foreground" />
-          <div>
-            <p className="font-medium">Belum ada pesanan masuk</p>
-            <p className="text-sm text-muted-foreground">
-              Bagikan link{" "}
-              <Link href={`/${store.slug}`} className="underline underline-offset-2">
-                /{store.slug}
-              </Link>{" "}
-              — pesanan dari pembeli muncul di sini otomatis, bahkan sebelum
-              chat-nya dikirim.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col gap-3">
+        <div className="flex justify-end">
+          <OrdersLive storeId={store.id} />
+        </div>
+        <Card>
+          <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
+            <ReceiptText className="size-8 text-muted-foreground" />
+            <div>
+              <p className="font-medium">Belum ada pesanan masuk</p>
+              <p className="text-sm text-muted-foreground">
+                Bagikan link{" "}
+                <Link href={`/${store.slug}`} className="underline underline-offset-2">
+                  /{store.slug}
+                </Link>{" "}
+                — pesanan dari pembeli muncul di sini otomatis, bahkan sebelum
+                chat-nya dikirim.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
     <div className="flex flex-col gap-3">
+      <div className="flex justify-end">
+        <OrdersLive storeId={store.id} />
+      </div>
       {orders.map((o) => (
         <Card key={o.id} className="gap-0 py-3">
           <CardContent className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4">

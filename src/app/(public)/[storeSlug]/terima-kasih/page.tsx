@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { WhatsAppLauncher } from "@/components/storefront/whatsapp-launcher";
 
 export const metadata: Metadata = { title: "Pesanan tercatat" };
 
@@ -39,8 +40,8 @@ async function Content({
   params: Promise<{ storeSlug: string }>;
   searchParams: Promise<{ ref?: string }>;
 }) {
-  const [{ storeSlug }, { ref }] = await Promise.all([params, searchParams]);
-  if (!ref || !REF_PATTERN.test(ref)) notFound();
+  const [{ storeSlug }, { ref: orderRef }] = await Promise.all([params, searchParams]);
+  if (!orderRef || !REF_PATTERN.test(orderRef)) notFound();
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col items-center gap-5 px-6 py-16 text-center">
@@ -48,16 +49,16 @@ async function Content({
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Pesanan tercatat ✔</h1>
         <p className="mt-2 text-sm leading-relaxed text-neutral-600">
-          Kode pesanan <code className="rounded bg-neutral-200 px-1.5 py-0.5 font-semibold">{ref}</code>{" "}
-          sudah masuk ke toko ini. WhatsApp seharusnya terbuka di tab lain —
-          tinggal pencet <strong>kirim</strong> di sana supaya penjual langsung
-          melihat rincianmu.
-        </p>
-        <p className="mt-2 text-xs text-neutral-500">
-          Kalau tab WhatsApp tidak terbuka, ulangi dari keranjang — pesananmu
-          tetap aman tercatat.
+          Kode pesanan <code className="rounded bg-neutral-200 px-1.5 py-0.5 font-semibold">{orderRef}</code>{" "}
+          sudah masuk ke penjual. Sekarang buka WhatsApp dan pencet{" "}
+          <strong>kirim</strong> supaya chat-nya sampai.
         </p>
       </div>
+
+      <div className="mt-1 w-full">
+        <WhatsAppLauncher orderRef={orderRef} />
+      </div>
+
       <Button asChild variant="outline" className="mt-2">
         <Link href={`/${storeSlug}`}>Kembali ke toko</Link>
       </Button>
