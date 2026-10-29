@@ -90,20 +90,20 @@ async function DashboardContent() {
         <CardHeader>
           <CardTitle>Langkah berikutnya</CardTitle>
           <CardDescription>
-            Kelola profil &amp; nomor WhatsApp toko; katalog, pesanan, analitik,
-            dan tema menyusul tiap milestone.
+            Etalase publik-mu sudah aktif 🎉 Atur profil, tautan sosial, dan
+            katalog — pesanan &amp; tema menyusul.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-wrap items-center gap-3">
-          <Button asChild variant="outline">
-            <Link href="/dashboard/toko">Atur Profil Toko</Link>
+          <Button asChild>
+            <Link href={`/${store.slug}`}>Lihat Etalase Publik</Link>
           </Button>
           <Button asChild variant="outline">
             <Link href="/dashboard/produk">Kelola Produk</Link>
           </Button>
-          <span className="text-sm text-muted-foreground">
-            Etalase publik hadir di Milestone 3 — katalogmu sudah tersimpan aman.
-          </span>
+          <Button asChild variant="outline">
+            <Link href="/dashboard/toko">Atur Profil &amp; Tautan</Link>
+          </Button>
         </CardContent>
       </Card>
     </>

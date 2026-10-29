@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { requireUser } from '@/lib/auth'
+import { revalidateStore } from '@/lib/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getOwnStore } from '@/lib/db/queries/dashboard'
 import { getProduct } from '@/lib/db/queries/product'
@@ -65,6 +66,7 @@ export async function saveProductAction(
   }
 
   revalidatePath('/dashboard/produk')
+  revalidateStore(store.slug)
   const created = data as { id: string } | null
   return { ok: true, productId: created?.id ?? productId ?? undefined }
 }
@@ -86,6 +88,7 @@ export async function setProductActiveAction(
   if (error) return { error: 'Gagal mengubah status produk.' }
 
   revalidatePath('/dashboard/produk')
+  revalidateStore(store.slug)
   return {}
 }
 
@@ -105,5 +108,6 @@ export async function deleteProductAction(
   if (error) return { error: 'Gagal menghapus produk.' }
 
   revalidatePath('/dashboard/produk')
+  revalidateStore(store.slug)
   return {}
 }

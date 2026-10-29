@@ -213,8 +213,7 @@ function SuccessCard({ slug }: { slug: string }) {
       <CardHeader>
         <CardTitle className="text-green-600">Toko kamu sudah jadi! 🎉</CardTitle>
         <CardDescription>
-          Halaman publik akan aktif penuh di Milestone 3 — tapi nama dan datanya
-          sudah tersimpan aman.
+          Halaman publikmu sudah aktif — tinggal tambahkan produk dari dashboard.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">

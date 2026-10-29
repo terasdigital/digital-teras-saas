@@ -2,7 +2,12 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { requireUser } from "@/lib/auth";
-import { getOwnStore } from "@/lib/db/queries/dashboard";
+import {
+  getLinkUsage,
+  getOwnLinks,
+  getOwnStore,
+} from "@/lib/db/queries/dashboard";
+import { LinksSection } from "@/components/dashboard/links-section";
 import { StoreForm } from "./store-form";
 
 export const metadata: Metadata = { title: "Profil Toko" };
@@ -12,23 +17,31 @@ async function TokoContent() {
   const store = await getOwnStore(user.id);
   if (!store) redirect("/onboarding");
 
+  const [links, linkUsage] = await Promise.all([
+    getOwnLinks(store.id),
+    getLinkUsage(store.id),
+  ]);
+
   return (
-    // key = updated_at: tiap simpan sukses, trigger DB menaikkan nilai ini →
-    // StoreForm remount dengan state segar (switch sinkron dgn DB, hasil
-    // useActionState lama tidak ter-replay saat kembali ke halaman).
-    <StoreForm
-      key={store.updated_at}
-      store={{
-        slug: store.slug,
-        name: store.name,
-        tagline: store.tagline,
-        bio: store.bio,
-        whatsapp: store.whatsapp,
-        published: store.published,
-        avatarPath: store.avatar_path,
-        bannerPath: store.banner_path,
-      }}
-    />
+    <div className="flex flex-col gap-6">
+      {/* key = updated_at: tiap simpan sukses, trigger DB menaikkan nilai ini →
+          StoreForm remount dengan state segar (switch sinkron dgn DB, hasil
+          useActionState lama tidak ter-replay saat kembali ke halaman). */}
+      <StoreForm
+        key={store.updated_at}
+        store={{
+          slug: store.slug,
+          name: store.name,
+          tagline: store.tagline,
+          bio: store.bio,
+          whatsapp: store.whatsapp,
+          published: store.published,
+          avatarPath: store.avatar_path,
+          bannerPath: store.banner_path,
+        }}
+      />
+      <LinksSection links={links} usage={linkUsage} />
+    </div>
   );
 }
 

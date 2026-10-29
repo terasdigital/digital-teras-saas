@@ -3,7 +3,9 @@
 import { revalidatePath } from 'next/cache'
 import { requireUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
+import { revalidateStore } from '@/lib/cache'
 import { getOwnStore } from '@/lib/db/queries/dashboard'
+
 import { isReservedSlug, isValidSlug, normalizeSlug } from '@/lib/slug'
 import { buildAssetPath, safeImageExt, STORE_ASSETS_BUCKET } from '@/lib/storage'
 import {
@@ -64,6 +66,8 @@ export async function createStoreAction(
 
   const created = data as { id: string; slug: string; name: string }
   revalidatePath('/dashboard')
+  // hasil 404 untuk slug ini mungkin ter-cache sebelum toko dibuat — buang
+  revalidateStore(created.slug)
   return { ok: true, createdSlug: created.slug }
 }
 
@@ -154,5 +158,6 @@ export async function updateStoreAction(
 
   revalidatePath('/dashboard')
   revalidatePath('/dashboard/toko')
+  revalidateStore(store.slug)
   return { ok: true }
 }

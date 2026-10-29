@@ -33,6 +33,39 @@ export async function getOwnStore(userId: string): Promise<StoreRow | null> {
   return (data as StoreRow) ?? null
 }
 
+export interface LinkRow {
+  id: string
+  label: string
+  url: string
+  icon: string | null
+  position: number
+  enabled: boolean
+}
+
+export async function getOwnLinks(storeId: string): Promise<LinkRow[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('links')
+    .select('*')
+    .eq('store_id', storeId)
+    .order('position', { ascending: true })
+    .order('created_at', { ascending: true })
+  return (data as LinkRow[]) ?? []
+}
+
+export interface LinkUsage {
+  can: boolean
+  used: number
+  limit: number | null
+}
+
+export async function getLinkUsage(storeId: string): Promise<LinkUsage> {
+  const supabase = await createClient()
+  const { data } = await supabase.rpc('can_create', { p_store: storeId, p_kind: 'link' })
+  const g = data as { can: boolean; used: number; limit: number | null } | null
+  return { can: g?.can ?? true, used: g?.used ?? 0, limit: g?.limit == null ? null : Number(g.limit) }
+}
+
 export async function getSubscriptionInfo(storeId: string) {
   const supabase = await createClient()
   const [{ data: sub }, plan] = await Promise.all([
