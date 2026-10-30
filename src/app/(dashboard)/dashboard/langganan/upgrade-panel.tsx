@@ -94,7 +94,13 @@ export function UpgradePanel({
             Batas pemakaian &amp; fitur Pro sudah terbuka. Data halaman akan
             menyegar sendiri.
           </p>
-          <Button variant="outline" onClick={() => setInit(null)}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setPaid(false);
+              setInit(null);
+            }}
+          >
             Selesai
           </Button>
         </CardContent>

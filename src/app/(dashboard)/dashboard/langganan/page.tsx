@@ -81,9 +81,16 @@ async function Content() {
           <CardContent className="flex flex-col gap-3">
             <Meter label="Produk" used={usage.products} max={usage.limits.max_products} />
             <Meter label="Tautan" used={usage.links} max={usage.limits.max_links} />
+            <p className="text-xs text-muted-foreground">
+              Batas mengikuti paket aktif — naik otomatis saat upgrade.
+            </p>
             <div className="flex gap-4 text-xs text-muted-foreground">
-              <span>Maks varian/produk: {usage.limits.max_variants ?? "∞"}</span>
-              <span>Riwayat analitik: {usage.limits.analytics_days ?? "∞"} hari</span>
+              <span>
+                Maks varian/produk ({usage.plan}): {usage.limits.max_variants ?? "∞"}
+              </span>
+              <span>
+                Riwayat analitik ({usage.plan}): {usage.limits.analytics_days ?? "∞"} hari
+              </span>
             </div>
           </CardContent>
         </Card>
