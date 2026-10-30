@@ -2,8 +2,23 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getStorefront } from "@/lib/db/queries/storefront";
+import { env } from "@/lib/env";
+import { getPublicClient } from "@/lib/supabase/public";
 import { storeJsonLd } from "@/lib/jsonld";
 import { StorefrontView } from "@/components/storefront/storefront-view";
+
+/**
+ * Slug toko yang ada saat build → shell (termasuk <head>/metadata) ter-
+ * prerender; slug baru tetap dilayani dinamis (dynamicParams default).
+ * Kesegaran data dijaga cacheTag store:{slug} + updateTag tiap mutasi.
+ */
+export async function generateStaticParams() {
+  const { data } = await getPublicClient()
+    .from("public_storefront")
+    .select("slug")
+    .limit(1000);
+  return (data ?? []).map((r) => ({ storeSlug: String(r.slug) }));
+}
 
 export async function generateMetadata({
   params,
@@ -15,7 +30,8 @@ export async function generateMetadata({
   if (!data) return { title: "Toko tidak ditemukan" };
 
   const { store } = data;
-  const title = `${store.name} — Digital Teras`;
+  // template root layout sudah menambah "— Digital Teras"; jangan dobel.
+  const title = store.name;
   const description =
     store.tagline ?? store.bio ?? `Katalog & pesanan via WhatsApp di satu link.`;
 
@@ -28,7 +44,7 @@ export async function generateMetadata({
       type: "profile",
       url: `/${store.slug}`,
     },
-    alternates: { canonical: `/${store.slug}` },
+    alternates: { canonical: `${env.APP_URL}/${store.slug}` },
   };
 }
 

@@ -5,7 +5,21 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { getProductPage } from "@/lib/db/queries/storefront";
+import { env } from "@/lib/env";
+import { getPublicClient } from "@/lib/supabase/public";
 import { productJsonLd } from "@/lib/jsonld";
+
+/** Pasangan (toko, produk) yang ada saat build → metadata masuk head shell. */
+export async function generateStaticParams() {
+  const { data } = await getPublicClient()
+    .from("public_products")
+    .select("store_slug, slug")
+    .limit(5000);
+  return (data ?? []).map((r) => ({
+    storeSlug: String(r.store_slug),
+    productSlug: String(r.slug),
+  }));
+}
 import { formatRupiah } from "@/lib/format";
 import { assetUrl } from "@/lib/storage";
 import { CartMount } from "@/components/storefront/cart-mount";
@@ -33,7 +47,7 @@ export async function generateMetadata({
   return {
     title: `${product.name} — ${store.name}`,
     description,
-    alternates: { canonical: `/${store.slug}/produk/${product.slug}` },
+    alternates: { canonical: `${env.APP_URL}/${store.slug}/produk/${product.slug}` },
   };
 }
 
@@ -56,7 +70,7 @@ async function Content({
   const chatUrl = `https://wa.me/${store.whatsapp}?text=${encodeURIComponent(chatText)}`;
 
   return (
-    <div className={themeRootClass(theme)} style={themeStyleVars(theme)}>
+    <main className={themeRootClass(theme)} style={themeStyleVars(theme)}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -125,7 +139,7 @@ async function Content({
           Pesananmu tercatat otomatis di toko ini — walau chaticonnya belum kesentuh ✨
         </p>
       </div>
-    </div>
+    </main>
   );
 }
 

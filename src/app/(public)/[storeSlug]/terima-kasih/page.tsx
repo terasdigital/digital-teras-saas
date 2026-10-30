@@ -17,7 +17,7 @@ export default function TerimaKasihPage(props: {
   // Runtime data (params+searchParams) & possible notFound() → di belakang
   // Suspense (Cache Components): static shell = skeleton, isi mengalir saat request.
   return (
-    <div className="min-h-svh bg-neutral-50">
+    <main className="min-h-svh bg-neutral-50">
       <Suspense
         fallback={
           <div className="mx-auto flex w-full max-w-md animate-pulse flex-col items-center gap-5 px-6 py-16">
@@ -29,7 +29,7 @@ export default function TerimaKasihPage(props: {
       >
         <Content {...props} />
       </Suspense>
-    </div>
+    </main>
   );
 }
 

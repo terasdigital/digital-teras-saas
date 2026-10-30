@@ -178,7 +178,7 @@ export function StorefrontView({ data }: { data: StorefrontData }) {
   const linksCompact = theme.layout === "katalog";
 
   return (
-    <div className={`min-h-svh bg-neutral-50 ${themeRootClass(theme)}`} style={themeStyleVars(theme)}>
+    <main className={`min-h-svh bg-neutral-50 ${themeRootClass(theme)}`} style={themeStyleVars(theme)}>
       <TrackPageView storeSlug={store.slug} event="visit" />
       <div className="mx-auto flex w-full max-w-md flex-col gap-5 px-4 py-8">
         <StoreHeader data={data} />
@@ -213,6 +213,6 @@ export function StorefrontView({ data }: { data: StorefrontData }) {
 
       {/* UI keranjang dimuat on-demand (CartMount) — hemat First-Load JS */}
       <CartMount storeSlug={store.slug} />
-    </div>
+    </main>
   );
 }

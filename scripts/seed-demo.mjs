@@ -40,19 +40,42 @@ const api = async (path, opts = {}) => {
 };
 const rpc = (fn, body) => api(`rpc/${fn}`, { method: "POST", body: JSON.stringify(body) });
 
-// 1) akun demo (upsert via admin API)
-let user = (await fetch(`${url}/auth/v1/admin/users?email=${encodeURIComponent(email)}`, {
-  headers: H,
-}).then((r) => (r.ok ? r.json() : null)))?.users?.[0];
-if (!user) {
-  user = await fetch(`${url}/auth/v1/admin/users`, {
+// 1) akun demo — PENTING: GoTrue /admin/users TIDAK andal memfilter ?email=,
+//    jadi buat dulu; bila email sudah dipakai, cari id dari daftar lengkap
+//    (filter client-side) lalu reset passwordnya.
+let user;
+{
+  const createRes = await fetch(`${url}/auth/v1/admin/users`, {
     method: "POST",
     headers: H,
     body: JSON.stringify({ email, password: pass, email_confirm: true }),
-  }).then((r) => r.json());
-  if (!user.id) throw new Error("gagal membuat user: " + JSON.stringify(user).slice(0, 200));
+  });
+  const createJson = await createRes.json().catch(() => null);
+  if (createRes.ok && createJson?.id) {
+    user = createJson;
+  } else {
+    let found = null;
+    for (let page = 1; page <= 20 && !found; page++) {
+      const list = await fetch(`${url}/auth/v1/admin/users?per_page=50&page=${page}`, {
+        headers: H,
+      }).then((r) => r.json());
+      const users = list.users ?? [];
+      found = users.find((u) => u.email === email) ?? null;
+      if (users.length < 50) break;
+    }
+    if (!found) {
+      throw new Error("gagal membuat/menemukan user demo: " + JSON.stringify(createJson).slice(0, 200));
+    }
+    const upd = await fetch(`${url}/auth/v1/admin/users/${found.id}`, {
+      method: "PUT",
+      headers: H,
+      body: JSON.stringify({ password: pass, email_confirm: true }),
+    });
+    if (!upd.ok) throw new Error("gagal reset password demo: HTTP " + upd.status);
+    user = found;
+  }
 }
-console.log("user  :", user.id);
+console.log("user  :", user.id, email);
 
 // 2) slug bebas (coba base, lalu base-2, base-3, …)
 let slug = baseSlug;
