@@ -124,7 +124,21 @@ if (row0id(sf)) {
   );
 }
 
-// ── 5) harga tidak pernah datang dari klien: RPC hanya terima variantId+qty ──
+// ── 5) fungsi billing tidak boleh tersentuh anon (migrasi 0013) ─────────────
+{
+  const mb = await rest("rpc/mark_billing_paid", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ p_order_id: "dt-auditfake00000000", p_payment_method: "x", p_payload: {} }),
+  });
+  check(
+    "anon TIDAK bisa memanggil mark_billing_paid",
+    mb.status === 401 || mb.status === 403 || mb.j?.code === "42501",
+    `HTTP ${mb.status}${mb.j?.message ? " — " + String(mb.j.message).slice(0, 60) : ""}`,
+  );
+}
+
+// ── 6) harga tidak pernah datang dari klien: RPC hanya terima variantId+qty ──
 const rpcSrc = fs.readFileSync(new URL("../supabase/migrations/202610280005_orders.sql", import.meta.url), "utf8");
 check(
   "place_order menghitung harga dari DB (audit statis)",
