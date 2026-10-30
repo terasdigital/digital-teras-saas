@@ -85,6 +85,17 @@ export function ThemeEditor({
       toast.error(parsed.error.issues[0]?.message ?? "Tema tidak valid");
       return;
     }
+    // Pre-check UX untuk tab basi (dibuka semasa paket masih Pro lalu expire):
+    // tanpa ini user tetap kena toast dari gerbang server, tapi lebih cepat
+    // dan tanpa roundtrip. Otoritas tetap di saveThemeAction.
+    if (!flags.customAccent && !isCuratedAccent(parsed.data.accent)) {
+      toast.error("Warna kustom khusus Pro — pilih salah satu warna palet dulu ya.");
+      return;
+    }
+    if (!parsed.data.show_powered && !flags.hideBadge) {
+      toast.error("Sembunyikan badge khusus Pro.");
+      return;
+    }
     startSave(async () => {
       const res = await saveThemeAction(parsed.data);
       if (res?.error) toast.error(res.error);
