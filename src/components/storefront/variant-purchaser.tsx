@@ -44,6 +44,8 @@ export function VariantPurchaser({ storeSlug, product, variants }: Props) {
       1,
     );
     track(storeSlug, "cart_add", product.id);
+    // bangkitkan UI keranjang (dimuat on-demand oleh CartMount)
+    window.dispatchEvent(new Event("dt:cart-active"));
     toast.success("Masuk keranjang 🛒", {
       action: {
         label: "Buka",

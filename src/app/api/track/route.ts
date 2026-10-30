@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { getPublicClient } from "@/lib/supabase/public";
 import { trackPayloadSchema } from "@/lib/validation/track";
 
@@ -11,6 +12,10 @@ const BOT_UA = /bot|crawl|spider|preview|headless|lighthouse|phantomjs|slurp|cur
  * definer, hanya toko published). Kegagalan apa pun ditelan senyap.
  */
 export async function POST(request: NextRequest) {
+  // rem first-line: >60 event/menit per IP dianggap noise
+  if (!rateLimit(`track:${clientIp(request.headers)}`, 60)) {
+    return new NextResponse(null, { status: 204 });
+  }
   try {
     const json = await request.json().catch(() => null);
     const parsed = trackPayloadSchema.safeParse(json);

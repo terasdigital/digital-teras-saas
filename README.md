@@ -29,8 +29,11 @@ Micro-SaaS link-in-bio dengan katalog produk & checkout WhatsApp (micro-store) u
 | `pnpm dev` / `pnpm build` | development / production build |
 | `pnpm test` | unit test (Vitest) |
 | `pnpm typecheck` / `pnpm lint` | pemeriksaan tipe / ESLint |
+| `node scripts/audit-rls.mjs` | **audit keamanan RLS** dengan anon key (jalankan setelah migrasi baru) |
+| `node scripts/seed-demo.mjs [--slug x]` | buat akun+toko demo lengkap via service key |
+| `node scripts/bundle-size.mjs <server> <slug>` | ukur byte JS/CSS/HTML etalase publik |
 | `pnpm dlx supabase db reset` | reset DB lokal: migrate + seed |
-| `pnpm dlx supabase gen types typescript --local > src/types/database.ts` | regenerasi tipe dari skema DB (mulai M1) |
+| `pnpm dlx supabase gen types typescript --local > src/types/database.ts` | regenerasi tipe dari skema DB |
 
 ## Konvensi penting
 
@@ -51,6 +54,7 @@ Micro-SaaS link-in-bio dengan katalog produk & checkout WhatsApp (micro-store) u
 - ✅ **M5** — analitik: beacon `/api/track`, event + rollup, corong konversi, dedupe 30 dtk
 - ✅ **M6** — tema: `themeSchema`, CSS vars di server-render, editor + pratinjau langsung
 - ✅ **M7** — langganan Midtrans (sandbox): `billing_payments`, webhook idempoten + SHA512 + belt-check, halaman Langganan (QRIS/VABCA/Snap kartu), meter batas di semua create
-- ⏭ **M8** — polish/SEO: sitemap, JSON-LD, Lighthouse storefront, rate-limit, audit RLS anon
+- ✅ **M8** — sitemap+robots dinamis, JSON-LD Store/Product, halaman /pricing + legal (syarat & privasi), rate-limit beacon & checkout, audit RLS anonim (`scripts/audit-rls.mjs`), grant diperketat (0011), cart UI lazy-load, demo seeder
+- ⏭ pasca-MVP (M9+): WhatsApp Business API (notifikasi order resmi), multi-toko, kupon, dark canvas, bundle analysis radix-ui umbrella import, i18n, pembayaran live + verifikasi bisnis Midtrans
 
 Detail lengkap: lihat rencana teknis di `~/.claude/plans/saya-ingin-membuat-digital-glittery-otter.md`.

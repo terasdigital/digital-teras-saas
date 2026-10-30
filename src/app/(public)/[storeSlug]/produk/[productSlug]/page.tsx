@@ -5,9 +5,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { getProductPage } from "@/lib/db/queries/storefront";
+import { productJsonLd } from "@/lib/jsonld";
 import { formatRupiah } from "@/lib/format";
 import { assetUrl } from "@/lib/storage";
-import { CartButton } from "@/components/storefront/cart-islands";
+import { CartMount } from "@/components/storefront/cart-mount";
 import { VariantPurchaser } from "@/components/storefront/variant-purchaser";
 import { TrackPageView } from "@/components/storefront/track-page-view";
 import { readTheme } from "@/lib/validation/theme";
@@ -56,6 +57,12 @@ async function Content({
 
   return (
     <div className={themeRootClass(theme)} style={themeStyleVars(theme)}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productJsonLd(store.slug, store.name, product)),
+        }}
+      />
       <div className="mx-auto flex w-full max-w-md flex-col gap-4 px-4 py-6">
         <TrackPageView
           storeSlug={store.slug}
@@ -113,7 +120,7 @@ async function Content({
           <MessageCircle className="size-4" />
           Tanya dulu via WhatsApp
         </a>
-        <CartButton storeSlug={store.slug} />
+        <CartMount storeSlug={store.slug} />
         <p className="text-center text-xs text-neutral-400">
           Pesananmu tercatat otomatis di toko ini — walau chaticonnya belum kesentuh ✨
         </p>

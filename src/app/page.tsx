@@ -51,6 +51,13 @@ export default function LandingPage() {
       <Suspense fallback={<GuestCta />}>
         <CtaArea />
       </Suspense>
+
+      <footer className="mt-16 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-neutral-400">
+        <Link href="/pricing" className="hover:text-neutral-600">Harga</Link>
+        <Link href="/legal/terms" className="hover:text-neutral-600">Syarat &amp; Ketentuan</Link>
+        <Link href="/legal/privacy" className="hover:text-neutral-600">Privasi</Link>
+        <span>&copy; Digital Teras</span>
+      </footer>
     </main>
   );
 }

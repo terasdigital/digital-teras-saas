@@ -1,6 +1,8 @@
 'use server'
 
+import { headers } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
+import { clientIp, rateLimit } from '@/lib/rate-limit'
 import { buildWaMessage, type WaLine } from '@/lib/wa'
 import { checkoutSchema, type CheckoutResult } from '@/lib/validation/checkout'
 
@@ -41,6 +43,12 @@ export async function submitOrderAction(input: unknown): Promise<CheckoutResult>
     return { error: parsed.error.issues[0]?.message ?? 'Data pesanan tidak valid' }
   }
   const { storeSlug, buyer, lines, session } = parsed.data
+
+  // spam guard: maks 5 pesanan/menit per IP per toko (validasi DB tetap otoritas)
+  const h = await headers()
+  if (!rateLimit(`order:${clientIp(h)}:${storeSlug}`, 5)) {
+    return { error: 'Terlalu sering membuat pesanan — tunggu sebentar ya.' }
+  }
 
   const supabase = await createClient()
   const { data, error } = await supabase.rpc('place_order', {

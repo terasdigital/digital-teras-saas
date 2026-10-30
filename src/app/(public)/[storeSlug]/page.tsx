@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getStorefront } from "@/lib/db/queries/storefront";
+import { storeJsonLd } from "@/lib/jsonld";
 import { StorefrontView } from "@/components/storefront/storefront-view";
 
 export async function generateMetadata({
@@ -50,7 +51,15 @@ async function Content({ params }: { params: Promise<{ storeSlug: string }> }) {
   const { storeSlug } = await params;
   const data = await getStorefront(storeSlug);
   if (!data) notFound();
-  return <StorefrontView data={data} />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(storeJsonLd(data)) }}
+      />
+      <StorefrontView data={data} />
+    </>
+  );
 }
 
 export default function StorefrontPage({

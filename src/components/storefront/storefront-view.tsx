@@ -6,7 +6,7 @@ import { assetUrl } from "@/lib/storage";
 import { themeRootClass, themeStyleVars } from "@/lib/theme";
 import { readTheme } from "@/lib/validation/theme";
 import { BrandingBadge } from "./branding-badge";
-import { CartButton } from "./cart-islands";
+import { CartMount } from "./cart-mount";
 import { LinkIcon } from "./link-icon";
 import { TrackPageView } from "./track-page-view";
 import { TrackedLink } from "./tracked-link";
@@ -211,7 +211,8 @@ export function StorefrontView({ data }: { data: StorefrontData }) {
         {theme.show_powered && <BrandingBadge />}
       </div>
 
-      <CartButton storeSlug={store.slug} />
+      {/* UI keranjang dimuat on-demand (CartMount) — hemat First-Load JS */}
+      <CartMount storeSlug={store.slug} />
     </div>
   );
 }
